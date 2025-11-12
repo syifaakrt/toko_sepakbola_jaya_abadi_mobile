@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:toko_sepakbola_jaya_abadi/menu.dart';
+import 'package:toko_sepakbola_jaya_abadi/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toko_sepakbola_jaya_abadi/screens/addproduct_form.dart';
 import 'package:toko_sepakbola_jaya_abadi/screens/menu.dart';
+import 'package:toko_sepakbola_jaya_abadi/screens/product_entry_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -25,16 +26,19 @@ class LeftDrawer extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(10)),
-                Text(
-                  "Seluruh produk sepakbola berkualitas ada disini!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
+                SingleChildScrollView(
+                  child: 
+                  Text(
+                    "Seluruh produk sepakbola berkualitas ada disini!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
-                ),
+                )
+                
               ],
             ),
           ),
@@ -62,7 +66,16 @@ class LeftDrawer extends StatelessWidget {
                 );
             },
           ),
-          // TODO: Tambahkan ListTile untuk halaman "See News" nanti
+          ListTile(
+            leading: const Icon(Icons.add_reaction_rounded),
+            title: const Text('Product List'),
+            onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProductEntryListPage()),
+                );
+            },
+          ),
         ],
       ),
     );

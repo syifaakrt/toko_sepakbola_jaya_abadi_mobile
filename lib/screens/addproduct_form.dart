@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toko_sepakbola_jaya_abadi/widgets/left_drawer.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:toko_sepakbola_jaya_abadi/screens/menu.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -26,6 +30,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -195,39 +200,39 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         backgroundColor: MaterialStateProperty.all(const Color.fromARGB(255, 0, 78, 142)
                         )
                       ),
-                      onPressed: (){
+                      onPressed: () async{
                         if (_formKey.currentState!.validate()){
-                          showDialog (
-                            context: context,
-                            builder: (context){
-                              return AlertDialog(
-                                title: Text("Produk $_productName berhasil ditambahkan!"),
-                                content: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Nama Produk: $_productName"),
-                                      Text("Harga: $_productPrice"),
-                                      Text("Deskripsi: $_productDescription"),
-                                      Text("URL Thumbnail: $_productThumbnailUrl"),
-                                      Text("Kategori: $_productCategory"),
-                                      Text("Produk Unggulan: ${_isFeatured ? "Ya" : "Tidak"}"),
-
-                                    ],
-                                  ),
-                                ), 
-                                actions:[
-                                  TextButton(
-                                    onPressed: (){
-                                      Navigator.pop(context);
-                                    }, 
-                                    child: const Text("OK")
-                                  )
-                                ]
-                              );        
-                            }
+                          // Mengirim data ke server
+                          final response = await request.postJson(
+                            "http://localhost:8000/create-flutter/",                            
+                            jsonEncode({
+                              "name": _productName,
+                              "price": _productPrice.toString(),
+                              "description": _productDescription,
+                              "thumbnail": _productThumbnailUrl,
+                              "category": _productCategory,
+                              "is_featured": _isFeatured ? "True" : "False",
+                            })
                           );
-                          _formKey.currentState!.reset();
+                          
+                          // Cek apakah pengiriman berhasil
+                          if (response['status'] == 'success'){
+                            // Kembali ke halaman menu utama
+                            if (!mounted) return;
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          } else {
+                            // Tampilkan pesan error
+                            ScaffoldMessenger.of(context).showSnackBar(const 
+                              SnackBar(
+                                content: Text("Something went wrong, please try again."),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Text(
